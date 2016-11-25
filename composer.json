@@ -1,0 +1,14 @@
+{
+	"name" : "oyzmer/php-aes",
+	"description" : "This is Aes-encrypt for php!",
+	"authors" : [{
+			"name" : "oyzmer",
+			"email" : "o.yyyy@qq.com"
+		}
+	],
+	"autoload" : {
+		"psr-4" : {
+			"Oyzmer\\Utils\\" : "src/"
+		}
+	}
+}

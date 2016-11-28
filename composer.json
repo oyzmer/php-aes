@@ -8,7 +8,7 @@
 	],
 	"autoload" : {
 		"psr-4" : {
-			"Oyzmer\\Utils\\" : "src/"
+			"Oyzmer\\phpAes\\" : "src/"
 		}
 	}
 }

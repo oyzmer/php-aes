@@ -27,6 +27,12 @@ class Aes
     protected static $mcrypt_exists = null;
 
     protected static $mbstring_func_overload = null;
+    
+    //替换url传参不支持的符号，解密时，用相应的符号替换后再解密
+    protected static $replaced = ['/','?','&'];
+    
+    protected static $be_replaced = ['$','@','*'];
+    
     // This is a static class, instances are disabled.
     final private function __construct()
     {}
@@ -43,8 +49,7 @@ class Aes
         $dx = '';
         // Lengths in bytes:
         $key_length = (int) ($key_size / 8);
-        $block_length = 16; // 128 bits, iv has the same length.
-                            // $salted_length = $key_length (32, 24, 16) + $block_length (16) = (48, 40, 32)
+        $block_length = 16; 
         $salted_length = $key_length + $block_length;
         while (self::strlen($salted) < $salted_length) {
             $dx = md5($dx . $pass . $salt, true);
@@ -53,11 +58,15 @@ class Aes
         $key = self::substr($salted, 0, $key_length);
         $iv = self::substr($salted, $key_length, $block_length);
         $encrypted = self::aes_cbc_encrypt($string, $key, $iv);
-        return $encrypted !== false ? base64_encode('Salted__' . $salt . $encrypted) : false;
+        $result = $encrypted !== false ? base64_encode('Salted__' . $salt . $encrypted) : false;
+        $result = str_replace(self::$replaced, self::$be_replaced, $result);
+        return $result;
+        
     }
 
     public static function dec($string, $pass)
     {
+        $string = str_replace(self::$be_replaced, self::$replaced, $string);
         $key_size = self::$key_size;
         // Lengths in bytes:
         $key_length = (int) ($key_size / 8);
